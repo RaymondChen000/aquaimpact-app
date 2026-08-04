@@ -5,7 +5,7 @@ function App() {
         AQUAIMPACT DASHBOARD
       </h1>
       <p className="mt-3 text-slate-300 text-lg">
-        
+        Water & SDG Metrics Dashboard
       </p>
     </div>
   )
