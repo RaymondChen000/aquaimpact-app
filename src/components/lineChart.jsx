@@ -67,10 +67,15 @@ export default function PovertyLineChart(){
         <input
           type='range'
           min={minYear}
-          max={endYear}   //stops as it touches selected end year
+          max={maxYear}  
           value={startYear}
-          onChange={(e) => setStartYear(Number(e.target.value))}
           className="w-full cursor-pointer"
+          onChange={(e) => {
+            const newValue = Number(e.target.value);
+            if(newValue<=endYear){
+              setStartYear(newValue);
+            }
+          }}
         />  
         {/* END YEAR SLIDER*/}
         <div className='flex justify-between text-xs text-slate-400'>
@@ -78,11 +83,16 @@ export default function PovertyLineChart(){
         </div>
         <input
           type='range'
-          min={startYear} //stops as it touches selected start year
+          min={minYear} 
           max={maxYear}
           value={endYear}
-          onChange={(e) => setEndYear(Number(e.target.value))}
           className="w-full cursor-pointer"
+          onChange={(e) => {
+            const newValue = Number(e.target.value);
+            if(newValue>=startYear){
+              setEndYear(newValue);
+            }
+          }}
         />  
       </div>
       

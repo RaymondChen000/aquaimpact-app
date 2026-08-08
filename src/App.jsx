@@ -11,7 +11,7 @@ function App() {
       </p>
 
       <h2 className="text-2xl font-bold mt-16 mb-4">
-        Poverty Chart
+        Poverty Rate over the World Regions
       </h2>
       <PovertyLineChart></PovertyLineChart>
 
