@@ -53,26 +53,39 @@ export default function PovertyLineChart(){
     return fullChartData.filter((d) => d.year >= startYear && d.year <= endYear);
   }, [fullChartData, startYear, endYear]);
 
+  const minYear = 2015;
+  const maxYear = 2024;
   return (
+    
     <div className="grid grid-cols-4 gap-6 w-full">
-      {/* DROP DOWN MENU FILTER */}
+      {/*MENU FILTER */}
       <div className="col-span-1 bg-slate-800 p-4 rounded-xl flex flex-col gap-4">
-        <label className="text-sm font-medium text-slate-300">
-        Start Year:
-        <select value={startYear} onChange={(e) => setStartYear(Number(e.target.value))} className='ml-2'>
-          <option value = {2015}>2015</option>
-          <option value = {2018}>2018</option>
-        </select>
-        </label>
-
-        <label className="text-sm font-medium text-slate-300">
-        End Year:
-        <select value={endYear} onChange={(e) => setEndYear(Number(e.target.value))} className='ml-2'>
-          <option value = {2023}>2023</option>
-          <option value = {2024}>2024</option>
-        </select>
-        </label>
+        {/* START YEAR SLIDER*/}
+        <div className='flex justify-between text-xs text-slate-400'>
+          <span>Start Year: <strong className='text-slate-400'>{startYear}</strong></span>
+        </div>
+        <input
+          type='range'
+          min={minYear}
+          max={endYear}   //stops as it touches selected end year
+          value={startYear}
+          onChange={(e) => setStartYear(Number(e.target.value))}
+          className="w-full cursor-pointer"
+        />  
+        {/* END YEAR SLIDER*/}
+        <div className='flex justify-between text-xs text-slate-400'>
+          <span>End Year: <strong className='text-slate-400'>{endYear}</strong></span>
+        </div>
+        <input
+          type='range'
+          min={startYear} //stops as it touches selected start year
+          max={maxYear}
+          value={endYear}
+          onChange={(e) => setEndYear(Number(e.target.value))}
+          className="w-full cursor-pointer"
+        />  
       </div>
+      
 
       {/* Line Chart */}
       <div className="col-span-3 h-[450px] bg-slate-900 p-4 rounded-xl">
