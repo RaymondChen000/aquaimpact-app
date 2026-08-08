@@ -72,6 +72,7 @@ export default function PovertyLineChart(){
       </select>
       </label>
 
+      {/* Line Chart */}
       <ResponsiveContainer width='100%' height='100%'>
         <RechartsLineChart data={filteredData} margin={{top:20, right:30, left:0, bottom:10}}>
           <CartesianGrid strokeDasharray="3,3" stroke="#334155"/>
