@@ -54,54 +54,58 @@ export default function PovertyLineChart(){
   }, [fullChartData, startYear, endYear]);
 
   return (
-    <div className="h-[450px] w-full">
+    <div className="grid grid-cols-4 gap-6 w-full">
       {/* DROP DOWN MENU FILTER */}
-      <label className="text-sm font-medium text-slate-300">
-      Start Year:
-      <select value={startYear} onChange={(e) => setStartYear(Number(e.target.value))} className='ml-2'>
-        <option value = {2015}>2015</option>
-        <option value = {2018}>2018</option>
-      </select>
-      </label>
+      <div className="col-span-1 bg-slate-800 p-4 rounded-xl flex flex-col gap-4">
+        <label className="text-sm font-medium text-slate-300">
+        Start Year:
+        <select value={startYear} onChange={(e) => setStartYear(Number(e.target.value))} className='ml-2'>
+          <option value = {2015}>2015</option>
+          <option value = {2018}>2018</option>
+        </select>
+        </label>
 
-      <label className="text-sm font-medium text-slate-300">
-      End Year:
-      <select value={endYear} onChange={(e) => setEndYear(Number(e.target.value))} className='ml-2'>
-        <option value = {2023}>2023</option>
-        <option value = {2024}>2024</option>
-      </select>
-      </label>
+        <label className="text-sm font-medium text-slate-300">
+        End Year:
+        <select value={endYear} onChange={(e) => setEndYear(Number(e.target.value))} className='ml-2'>
+          <option value = {2023}>2023</option>
+          <option value = {2024}>2024</option>
+        </select>
+        </label>
+      </div>
 
       {/* Line Chart */}
-      <ResponsiveContainer width='100%' height='100%'>
-        <RechartsLineChart data={filteredData} margin={{top:20, right:30, left:0, bottom:10}}>
-          <CartesianGrid strokeDasharray="3,3" stroke="#334155"/>
-          <XAxis dataKey="year" stroke="#94a3b8"/>
-          <YAxis stroke="#94a3b8" unit='%'/>
-          <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.5rem' }} />
-          <Legend
-            wrapperStyle={{ paddingTop: '15px' }}
-            formatter={(value) => (
-              <span className="text-slate-300 text-sm font-medium">
-              {REGION_CONFIG[value]?.name || value}
-              </span>
-            )}
-          />
-
-          {regionKeys.map((key) => (
-            <Line
-              key={key}
-              type="monotone"
-              dataKey={key}
-              name={REGION_CONFIG[key]?.name || key}
-              stroke={REGION_CONFIG[key]?.color || '#cbd5e1'}
-              strokeWidth={2}
-              connectNulls={true}
+      <div className="col-span-3 h-[450px] bg-slate-900 p-4 rounded-xl">
+        <ResponsiveContainer width='100%' height='100%'>
+          <RechartsLineChart data={filteredData} margin={{top:20, right:30, left:0, bottom:10}}>
+            <CartesianGrid strokeDasharray="3,3" stroke="#334155"/>
+            <XAxis dataKey="year" stroke="#94a3b8"/>
+            <YAxis stroke="#94a3b8" unit='%'/>
+            <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.5rem' }} />
+            <Legend
+              wrapperStyle={{ paddingTop: '15px' }}
+              formatter={(value) => (
+                <span className="text-slate-300 text-sm font-medium">
+                {REGION_CONFIG[value]?.name || value}
+                </span>
+              )}
             />
-          ))}
 
-        </RechartsLineChart>
-      </ResponsiveContainer>
+            {regionKeys.map((key) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                name={REGION_CONFIG[key]?.name || key}
+                stroke={REGION_CONFIG[key]?.color || '#cbd5e1'}
+                strokeWidth={2}
+                connectNulls={true}
+              />
+            ))}
+
+          </RechartsLineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
