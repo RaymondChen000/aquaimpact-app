@@ -38,7 +38,8 @@ function transformPovertyData(data){
 }
 
 export default function PovertyLineChart(){
-  const regionKeys = Object.keys(rawPovertyData);
+  const regionKeys = useMemo(() => Object.keys(rawPovertyData), []);
+  const [selectedRegions, setSelectedRegions] = useState(regionKeys);
   const fullChartData = useMemo(() => transformPovertyData(rawPovertyData), []);
 
   const availableYears = useMemo(() => {
@@ -55,12 +56,23 @@ export default function PovertyLineChart(){
 
   const minYear = 2015;
   const maxYear = 2024;
+  
+  // toggle region func
+  const handleToggleRegion = (regionCode) => {
+    setSelectedRegions((prevSelected) => {
+      if (prevSelected.includes(regionCode)){
+        return prevSelected.filter((code) => code !==regionCode);
+      }
+      return [...prevSelected, regionCode];
+    });
+  };
+
   return (
     <div className="grid grid-cols-6 gap-6 w-full">
       {/*MENU FILTER */}      
       <div className="col-span-2 bg-slate-800 p-4 rounded-xl flex flex-col gap-4">
-        <h3 className="text-white text-md font-semibold">Filter</h3>
-        <span>Range: <strong className='text-white'>{startYear}-{endYear}</strong></span>
+        <h3 className="text-white text-lg font-semibold flex justify-center items-center">Filter</h3>
+        <span>Range: <strong className='text-white text-sm'>{startYear}-{endYear}</strong></span>
         {/*SLIDER*/}
         <div className="grid w-full items-center">
           <div className="col-start-1 row-start-1 w-full h-1.5 bg-white/80 rounded-full" />
@@ -90,6 +102,20 @@ export default function PovertyLineChart(){
             }}
           />  
         </div>
+        {/*Checkbox*/}
+        <div className="flex items-center mb-4">
+            <input 
+              id="checkbox-wld" 
+              type="checkbox" 
+              value="WLD" 
+              checked={selectedRegions.includes('WLD')}
+              className="w-4 h-4 rounded cursor-pointer"
+              onChange={()=> handleToggleRegion('WLD')}
+              />
+            <label className="select-none ms-2 text-sm font-medium">World</label>
+        </div>
+
+
       </div>
       {/* Line Chart */}
       <div className="col-span-4 h-[450px] bg-slate-900 p-4 rounded-xl">
@@ -101,14 +127,20 @@ export default function PovertyLineChart(){
             <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.5rem' }} />
             <Legend
               wrapperStyle={{ paddingTop: '15px' }}
-              formatter={(value) => (
-                <span className="text-slate-300 text-sm font-medium">
-                {REGION_CONFIG[value]?.name || value}
-                </span>
-              )}
+              formatter={(value) =>{
+                let displayName = value;
+                if (REGION_CONFIG[value] && REGION_CONFIG[value.name]){
+                  displayName = REGION_CONFIG[value].name;
+                }
+                return(
+                  <span className='text-slate-300 text-sm font-medium'>
+                    {displayName}
+                  </span>
+                );
+              }}
             />
 
-            {regionKeys.map((key) => (
+            {selectedRegions.map((key) => (
               <Line
                 key={key}
                 type="monotone"
