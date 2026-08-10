@@ -56,49 +56,43 @@ export default function PovertyLineChart(){
   const minYear = 2015;
   const maxYear = 2024;
   return (
-    
-    <div className="grid grid-cols-4 gap-6 w-full">
-      {/*MENU FILTER */}
-      <div className="col-span-1 bg-slate-800 p-4 rounded-xl flex flex-col gap-4">
-        {/* START YEAR SLIDER*/}
-        <div className='flex justify-between text-xs text-slate-400'>
-          <span>Start Year: <strong className='text-slate-400'>{startYear}</strong></span>
+    <div className="grid grid-cols-6 gap-6 w-full">
+      {/*MENU FILTER */}      
+      <div className="col-span-2 bg-slate-800 p-4 rounded-xl flex flex-col gap-4">
+        <h3 className="text-white text-md font-semibold">Filter</h3>
+        <span>Range: <strong className='text-white'>{startYear}-{endYear}</strong></span>
+        {/*SLIDER*/}
+        <div className="grid w-full items-center">
+          <div className="col-start-1 row-start-1 w-full h-1.5 bg-white/80 rounded-full" />
+          <input
+            type='range'
+            min={minYear}
+            max={maxYear}  
+            value={startYear}
+            className="col-start-1 row-start-1 w-full appearance-none bg-transparent pointer-events-none cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto z-30"          onChange={(e) => {
+              const newValue = Number(e.target.value);
+              if(newValue<=endYear){
+                setStartYear(newValue);
+              }
+            }}
+          />  
+          <input
+            type='range'
+            min={minYear} 
+            max={maxYear}
+            value={endYear}
+            className="col-start-1 row-start-1 w-full appearance-none bg-transparent pointer-events-none cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto z-40"
+            onChange={(e) => {
+              const newValue = Number(e.target.value);
+              if(newValue>=startYear){
+                setEndYear(newValue);
+              }
+            }}
+          />  
         </div>
-        <input
-          type='range'
-          min={minYear}
-          max={maxYear}  
-          value={startYear}
-          className="w-full cursor-pointer"
-          onChange={(e) => {
-            const newValue = Number(e.target.value);
-            if(newValue<=endYear){
-              setStartYear(newValue);
-            }
-          }}
-        />  
-        {/* END YEAR SLIDER*/}
-        <div className='flex justify-between text-xs text-slate-400'>
-          <span>End Year: <strong className='text-slate-400'>{endYear}</strong></span>
-        </div>
-        <input
-          type='range'
-          min={minYear} 
-          max={maxYear}
-          value={endYear}
-          className="w-full cursor-pointer"
-          onChange={(e) => {
-            const newValue = Number(e.target.value);
-            if(newValue>=startYear){
-              setEndYear(newValue);
-            }
-          }}
-        />  
       </div>
-      
-
       {/* Line Chart */}
-      <div className="col-span-3 h-[450px] bg-slate-900 p-4 rounded-xl">
+      <div className="col-span-4 h-[450px] bg-slate-900 p-4 rounded-xl">
         <ResponsiveContainer width='100%' height='100%'>
           <RechartsLineChart data={filteredData} margin={{top:20, right:30, left:0, bottom:10}}>
             <CartesianGrid strokeDasharray="3,3" stroke="#334155"/>
