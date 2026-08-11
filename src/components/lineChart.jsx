@@ -9,8 +9,8 @@ import {
   Legend,
   CartesianGrid
 } from 'recharts';
-
 import rawPovertyData from '../data/povertyHistory.json'; 
+import { data } from 'autoprefixer';
 
 //config 
 const REGION_CONFIG = {
@@ -38,6 +38,7 @@ function transformPovertyData(data){
 }
 
 export default function PovertyLineChart(){
+
   const regionKeys = useMemo(() => Object.keys(rawPovertyData), []);
   const [selectedRegions, setSelectedRegions] = useState(regionKeys);
   const fullChartData = useMemo(() => transformPovertyData(rawPovertyData), []);
@@ -56,7 +57,7 @@ export default function PovertyLineChart(){
 
   const minYear = 2015;
   const maxYear = 2024;
-  
+
   // toggle region func
   const handleToggleRegion = (regionCode) => {
     setSelectedRegions((prevSelected) => {
@@ -65,6 +66,42 @@ export default function PovertyLineChart(){
       }
       return [...prevSelected, regionCode];
     });
+  };
+
+  // download data csv
+  const handleDownloadCSV = () => {
+    if (!filteredData || filteredData.length === 0) return;
+
+    const activeKeys = ['year', ...selectedRegions];
+
+    const headerRow = activeKeys
+      .map((key) => {
+        if (key === 'year') return 'Year';
+        return `"${REGION_CONFIG[key]?.name || key}"`;
+      })
+      .join(',');
+
+    const dataRows = filteredData.map((row) => {
+      return activeKeys
+        .map((key) => {
+          const val = row[key];
+          return val !== undefined && val !== null ? val : '';
+        })
+        .join(',');
+    });
+
+    const csvContent = [headerRow, ...dataRows].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Poverty_Data_${startYear}-${endYear}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -103,18 +140,32 @@ export default function PovertyLineChart(){
           />  
         </div>
         {/*Checkbox*/}
-        <div className="flex items-center mb-4">
-            <input 
-              id="checkbox-wld" 
-              type="checkbox" 
-              value="WLD" 
-              checked={selectedRegions.includes('WLD')}
-              className="w-4 h-4 rounded cursor-pointer"
-              onChange={()=> handleToggleRegion('WLD')}
-              />
-            <label className="select-none ms-2 text-sm font-medium">World</label>
+        <div className='flex flex-wrap gap-x-4 gap-y-2 mb-4'>
+          {Object.entries(REGION_CONFIG).map(([code, config]) =>(
+            <div key = {code} className="flex items-center mb-4">
+              <input 
+                id={"checkbox-${code}"} 
+                type="checkbox" 
+                value={code} 
+                checked={selectedRegions.includes(code)}
+                className="w-4 h-4 rounded cursor-pointer"
+                onChange={()=> handleToggleRegion(code)}
+                />
+              <label className="select-none ms-2 text-sm font-medium">{code}</label>
+            </div>
+          ))}
         </div>
 
+        {/* BUTTON FOR DOWNLOAD */}
+        <button
+          onClick={handleDownloadCSV}
+          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer mt-4">
+          {/* Download / Table Icon */}
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export Data (CSV)
+        </button>
 
       </div>
       {/* Line Chart */}
